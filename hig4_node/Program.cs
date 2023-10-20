@@ -50,18 +50,22 @@ namespace hig4_node
             SUCCEEDED = "succeeded",
             FAILED = "failed";
     }
-    //public struct ActionResponse
-    //{
-    //    //TODO: Convert to class?
-    //    String action_response;
-    //    String action_msg;
-    //    String action_log;
-    //}
+
+
 
     [RestResource]
     public class Hig4ModuleRestServer
     {
         private IRestServer _server;
+
+        private Dictionary<string, string> action_response(string action_response = "", string action_msg = "", string action_log = "")
+        {
+            Dictionary<string, string> response = new Dictionary<string, string>();
+            response["action_response"] = action_response;
+            response["action_msg"] = action_msg;
+            response["action_log"] = action_log;
+            return response;
+        }
 
         public Hig4ModuleRestServer(IRestServer server)
         {
@@ -72,6 +76,7 @@ namespace hig4_node
         public async Task State(IHttpContext context)
         {
             HiGInterface hig = _server.Locals.GetAs<HiGInterface>("hig_interface");
+            Dictionary<string, string> result = action_response();
             // TODO
             await context.Response.SendResponseAsync(
                 "state"
@@ -98,9 +103,7 @@ namespace hig4_node
             String action_handle;
             String action_vars;
             Dictionary<string, string> args;
-            Dictionary<string, string> response;
-            //ActionResponse action_response;
-
+            Dictionary<string, string> result = action_response();
 
             HiGInterface hig = _server.Locals.GetAs<HiGInterface>("hig_interface");
             context.Request.PathParameters.TryGetValue("action_handle", out action_handle);
@@ -114,16 +117,13 @@ namespace hig4_node
                     //TODO
                     break;
                 default:
-                    Console.WriteLine("Unknown action:" +  action_handle);
-                    response = new Dictionary<string, string>();
-                    response.Add("action_response", "StepStatus.SUCCEEDED");
-                    response.Add("action_msg", "block free");
-                    response.Add("action_log", "block free");
-                    msg = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(response));
+                    Console.WriteLine("Unknown action: " +  action_handle);
+                    result = action_response(StepStatus.FAILED, "", "Unknown action: " + action_handle);
                     break;
             }
 
-            await context.Response.SendResponseAsync(args);
+            byte[] msg = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(result));
+            await context.Response.SendResponseAsync(msg);
         }
     }
 }
