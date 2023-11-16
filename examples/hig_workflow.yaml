@@ -1,0 +1,62 @@
+name: Example BioNex HiG4 Workflow
+metadata:
+  author: Ryan D. Lewis
+  info: Example workflow to test HiG4 integration with WEI
+  version: 0.1
+
+modules:
+  - name: hig_centrifuge
+
+flowdef:
+  - name: Home
+    module: hig_centrifuge
+    action: home
+    args: {}
+    checks: null
+    comment: Homes the HiG centrifuge
+
+  - name: HomeShield
+    module: hig_centrifuge
+    action: home_shield
+    args: {}
+    checks: null
+    comment: Homes just the shield for the HiG centrifuge
+
+  - name: HomeShield
+    module: hig_centrifuge
+    action: home_shield
+    args: {}
+    checks: null
+    comment: Homes just the shield for the HiG centrifuge
+
+  - name: CloseShield
+    module: hig_centrifuge
+    action: close_shield
+    args: {}
+    checks: null
+    comment: Closes the shield for the HiG centrifuge
+
+  - name: OpenShield
+    module: hig_centrifuge
+    action: open_shield
+    args: {}
+    checks: null
+    comment: Opens the shield for the HiG centrifuge
+
+  - name: Spin
+    module: hig_centrifuge
+    action: spin
+    args: 
+      gs: 1000
+      accel_percent: 100
+      decel_percent: 100
+      time_seconds: 10
+    checks: null
+    comment: Spins the HiG centrifuge
+
+  # - name: AbortSpin
+  #   module: hig_centrifuge
+  #   action: abort_spin
+  #   args: {}
+  #   checks: null
+  #   comment: Aborts the active spin on the HiG centrifuge

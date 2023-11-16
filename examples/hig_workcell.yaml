@@ -1,0 +1,16 @@
+name: BioNex HiG4 Centrifuge Example Workcell
+
+config:
+  workcell_origin_coordinates: [0, 0, 0, 0, 0, 0, 0]
+
+modules:
+  - name: hig_centrifuge
+    model: bionex_hig4_centrifuge
+    interface: wei_rest_node
+    config:
+      rest_node_address: "http://127.0.0.1:2005"
+    workcell_coordinates: [0, 0, 0, 0, 0, 0, 0]
+
+locations:
+  hig_centrifuge:
+    hig.bucket: [0, 0, 0, 0, 0, 0, 0]
