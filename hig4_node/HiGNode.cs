@@ -51,8 +51,7 @@ namespace hig4_node
             hig_interface.Blocking = true;
             string id = Id.ToString(); // You can determine the ID of the HiG by running the USB-CANmodul Utility and using the value in the "DevNr" column
             string device_name = Name; // Change this name to whatever you want to call it. This name is used in the log file.
-            bool simulate = true; // Set to false if you are connected to actual HiG hardware, or true if you'd like to simulate a HiG
-            hig_interface.Initialize(device_name, id, simulate); // again, if Blocking = true, Initialize will block until it has completed or has experienced an error. You must wrap the call
+            hig_interface.Initialize(device_name, id, Simulate); // again, if Blocking = true, Initialize will block until it has completed or has experienced an error. You must wrap the call
         }
     }
 
@@ -100,8 +99,8 @@ namespace hig4_node
 
             HiGInterface hig_interface = _server.Locals.GetAs<HiGInterface>("hig_interface");
             string state = _server.Locals.GetAs<string>("state");
-            context.Request.PathParameters.TryGetValue("action_handle", out string action_handle);
-            context.Request.PathParameters.TryGetValue("action_vars", out string action_vars);
+            string action_handle = context.Request.QueryString["action_handle"];
+            string action_vars = context.Request.QueryString["action_vars"];
             Dictionary<string, string> args = JsonConvert.DeserializeObject<Dictionary<string, string>>(action_vars);
 
             if (state == ModuleStatus.BUSY)
@@ -127,12 +126,6 @@ namespace hig4_node
                     case "open_shield":
                         hig_interface.OpenShield(
                             Int32.Parse(args["bucket_index"])
-                        );
-                        result = UtilityFunctions.StepResponse(StepStatus.SUCCEEDED, "", "");
-                        break;
-                    case "home_shield":
-                        hig_interface.HomeShield(
-                            bool.Parse(args["open_shield_after_home_complete"])
                         );
                         result = UtilityFunctions.StepResponse(StepStatus.SUCCEEDED, "", "");
                         break;
