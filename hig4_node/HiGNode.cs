@@ -22,9 +22,10 @@ namespace hig4_node
         public bool Simulate { get; } = false;
 
         public string state = ModuleStatus.IDLE;
-        private HiGInterface hig_interface = new HiG();
+        private readonly HiGInterface hig_interface = new HiG();
         private IRestServer server;
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Used by CommandLineApplication.Execute above")]
         private void OnExecute()
         {
             
@@ -60,7 +61,7 @@ namespace hig4_node
     [RestResource]
     public class Hig4ModuleRestServer
     {
-        private IRestServer _server;
+        private readonly IRestServer _server;
 
         public Hig4ModuleRestServer(IRestServer server)
         {
@@ -71,8 +72,10 @@ namespace hig4_node
         public async Task State(IHttpContext context)
         {
             string state = _server.Locals.GetAs<string>("state");
-            Dictionary<string, string> response = new Dictionary<string, string>();
-            response["State"] = state;
+            Dictionary<string, string> response = new Dictionary<string, string>
+            {
+                ["State"] = state
+            };
             await context.Response.SendResponseAsync(JsonConvert.SerializeObject(response));
         }
 
@@ -93,20 +96,17 @@ namespace hig4_node
         [RestRoute("Post", "/action")]
         public async Task Action(IHttpContext context)
         {
-            string action_handle;
-            string action_vars;
-            Dictionary<string, string> args;
-            Dictionary<string, string> result = UtilityFunctions.action_response();
+            Dictionary<string, string> result;
 
             HiGInterface hig_interface = _server.Locals.GetAs<HiGInterface>("hig_interface");
             string state = _server.Locals.GetAs<string>("state");
-            context.Request.PathParameters.TryGetValue("action_handle", out action_handle);
-            context.Request.PathParameters.TryGetValue("action_vars", out action_vars);
-            args = JsonConvert.DeserializeObject(action_vars) as Dictionary<string, string>;
+            context.Request.PathParameters.TryGetValue("action_handle", out string action_handle);
+            context.Request.PathParameters.TryGetValue("action_vars", out string action_vars);
+            Dictionary<string, string> args = JsonConvert.DeserializeObject<Dictionary<string, string>>(action_vars);
 
             if (state == ModuleStatus.BUSY)
             {
-                result = UtilityFunctions.action_response(StepStatus.FAILED, "", "Module is Busy");
+                result = UtilityFunctions.StepResponse(StepStatus.FAILED, "", "Module is Busy");
                 await context.Response.SendResponseAsync(JsonConvert.SerializeObject(result));
             }
 
@@ -122,35 +122,35 @@ namespace hig4_node
                             double.Parse(args["decel_percent"]),
                             double.Parse(args["time_seconds"])
                         );
-                        result = UtilityFunctions.action_response(StepStatus.SUCCEEDED, "", "");
+                        result = UtilityFunctions.StepResponse(StepStatus.SUCCEEDED, "", "");
                         break;
                     case "open_shield":
                         hig_interface.OpenShield(
                             Int32.Parse(args["bucket_index"])
                         );
-                        result = UtilityFunctions.action_response(StepStatus.SUCCEEDED, "", "");
+                        result = UtilityFunctions.StepResponse(StepStatus.SUCCEEDED, "", "");
                         break;
                     case "home_shield":
                         hig_interface.HomeShield(
                             bool.Parse(args["open_shield_after_home_complete"])
                         );
-                        result = UtilityFunctions.action_response(StepStatus.SUCCEEDED, "", "");
+                        result = UtilityFunctions.StepResponse(StepStatus.SUCCEEDED, "", "");
                         break;
                     case "home":
                         hig_interface.Home();
-                        result = UtilityFunctions.action_response(StepStatus.SUCCEEDED, "", "");
+                        result = UtilityFunctions.StepResponse(StepStatus.SUCCEEDED, "", "");
                         break;
                     case "close_shield":
                         hig_interface.CloseShield();
-                        result = UtilityFunctions.action_response(StepStatus.SUCCEEDED, "", "");
+                        result = UtilityFunctions.StepResponse(StepStatus.SUCCEEDED, "", "");
                         break;
                     case "abort_spin":
                         hig_interface.AbortSpin();
-                        result = UtilityFunctions.action_response(StepStatus.SUCCEEDED, "", "");
+                        result = UtilityFunctions.StepResponse(StepStatus.SUCCEEDED, "", "");
                         break;
                     default:
                         Console.WriteLine("Unknown action: " + action_handle);
-                        result = UtilityFunctions.action_response(StepStatus.FAILED, "", "Unknown action: " + action_handle);
+                        result = UtilityFunctions.StepResponse(StepStatus.FAILED, "", "Unknown action: " + action_handle);
                         break;
                 }
                 _server.Locals.TryUpdate("state", ModuleStatus.IDLE, _server.Locals.GetAs<string>("state"));
@@ -159,7 +159,7 @@ namespace hig4_node
             {
                 _server.Locals.TryUpdate("state", ModuleStatus.ERROR, _server.Locals.GetAs<string>("state"));
                 Console.WriteLine(ex.ToString());
-                result = UtilityFunctions.action_response(StepStatus.FAILED, "", "Step failed: " + ex.ToString());
+                result = UtilityFunctions.StepResponse(StepStatus.FAILED, "", "Step failed: " + ex.ToString());
             }
 
             await context.Response.SendResponseAsync(JsonConvert.SerializeObject(result));
