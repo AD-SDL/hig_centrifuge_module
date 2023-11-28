@@ -212,8 +212,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Program.cs" />
+    <Compile Include="HiGNode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="utils.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
