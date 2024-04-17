@@ -1,0 +1,42 @@
+name: Test HiG
+metadata:
+  author: Ryan D. Lewis
+  info: Test workflow for HiG
+  version: 0.1
+
+modules:
+  - name: hig_centrifuge
+
+flowdef:
+  - name: Home HiG
+    module: hig_centrifuge
+    action: home
+    checks: null
+    comment: Home HiG
+    args:
+      bucket_index: 0
+
+  - name: Close HiG Shield
+    module: hig_centrifuge
+    action: close_shield
+    checks: null
+    comment: Close HiG Shield
+
+  - name: Spin HiG
+    module: hig_centrifuge
+    action: spin
+    checks: null
+    comment: Spin HiG
+    args:
+      gs: 1000
+      accel_percent: 100
+      decel_percent: 100
+      time_seconds: 10
+
+  - name: Open HiG Shield
+    module: hig_centrifuge
+    action: open_shield
+    checks: null
+    comment: Open HiG
+    args:
+      bucket_index: 0
