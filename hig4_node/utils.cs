@@ -27,10 +27,12 @@ namespace hig4_node
     {
         public static Dictionary<string, string> step_result(string action_response = StepStatus.IDLE, string action_msg = "", string action_log = "")
         {
-            Dictionary<string, string> response = new Dictionary<string, string>();
-            response["action_response"] = action_response;
-            response["action_msg"] = action_msg;
-            response["action_log"] = action_log;
+            Dictionary<string, string> response = new Dictionary<string, string>()
+            {
+                ["action_response"] = action_response,
+                ["action_msg"] = action_msg,
+                ["action_log"] = action_log,
+            };
             return response;
         }
 
