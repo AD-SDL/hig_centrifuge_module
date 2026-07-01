@@ -1,6 +1,7 @@
 import json
 import time
 from typing import Dict, Any
+import os as os
 
 import clr
 from madsci.common.types.action_types import (
@@ -15,28 +16,26 @@ from madsci.common.types.node_types import (
 )
 from madsci.node_module.helpers import action
 from madsci.node_module.rest_node_module import RestNode
+from pathlib import WindowsPath
 
 clr.AddReference(
     str(
         WindowsPath(__file__).parent
-        / "hidex_interface"
+        / "hig_centrifuge_interface"
         / "bin"
         / "Debug"
-        / "HiGIntegration.dll"
+        / "HiGIntegration"
     )
 )
 from BioNex.HiGIntegration import HiG
 from BioNex.HiGIntegration import HiGInterface
-import System  # type: ignore  # noqa: E402
-from System import ServiceModel  # type: ignore # noqa: E402
-from System.ServiceModel import Channels  # type: ignore # noqa: E402
 
 class HiGCentrifugeNodeConfig(RestNodeConfig):
     """Configuration for the HiGCentrifuge REST node"""
 
     device_id: int = 0
     device_name: str = "HiG4 Centrifuge"
-    simulate: bool = False
+    simulate: bool = True
 
 class HiGCentrifugeNode(RestNode):
 
@@ -109,5 +108,9 @@ class HiGCentrifugeNode(RestNode):
     @action
     def abort_spin(self) -> None:
         self.hig_interface.AbortSpin()
+
+if __name__ == "__main__":
+    hig_node = HiGCentrifugeNode()
+    hig_node.start_node()
 
     
