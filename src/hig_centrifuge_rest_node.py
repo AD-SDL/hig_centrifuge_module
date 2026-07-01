@@ -4,6 +4,8 @@ from typing import Dict, Any
 import os as os
 
 import clr
+from System import AppDomain
+from System.Reflection import Assembly
 from madsci.common.types.action_types import (
     ActionCancelled,
     ActionSucceeded,
@@ -36,6 +38,10 @@ class HiGCentrifugeNodeConfig(RestNodeConfig):
     device_id: int = 0
     device_name: str = "HiG4 Centrifuge"
     simulate: bool = True
+    bionex_dir: str = r"C:\Program Files (x86)\BioNex\HiG"
+    """Directory of the BioNex HiG install that holds the vendor DLLs
+    (HiGIntegration.dll and its dependencies). Override per-machine if the
+    driver software is installed somewhere else."""
 
 class HiGCentrifugeNode(RestNode):
 
@@ -47,6 +53,12 @@ class HiGCentrifugeNode(RestNode):
     def startup_handler(self) -> None:
         # Space for resource related stuff ***
 
+        # The vendor's dependencies (CanDongleWrapper, TechnosoftLibraryMT, ...)
+        # live in the BioNex install dir, which is not on the Python host's CLR
+        # probe path. Register a resolver before Initialize() or it raises
+        # FileNotFoundException for those assemblies -- even in simulate mode.
+        self._register_vendor_assembly_resolver()
+
         self.hig_interface = HiG()
         self.hig_interface.Blocking = True
         self.hig_interface.Initialize(
@@ -56,6 +68,22 @@ class HiGCentrifugeNode(RestNode):
         )
         self.homed = False
         # self.logger.log("HiG Centrifuge initialized.")
+
+    def _register_vendor_assembly_resolver(self) -> None:
+        """Resolve BioNex managed + native deps from the configured install dir."""
+        bionex_dir = self.config.bionex_dir
+        if hasattr(os, "add_dll_directory") and os.path.isdir(bionex_dir):
+            # Native (unmanaged) deps: CAN dongle / Technosoft motor drivers
+            os.add_dll_directory(bionex_dir)
+
+        def _resolve(sender, args):
+            name = args.Name.split(",")[0].strip()
+            dll = os.path.join(bionex_dir, name + ".dll")
+            return Assembly.LoadFrom(dll) if os.path.isfile(dll) else None
+
+        # Keep a reference so the delegate isn't garbage-collected.
+        self._vendor_resolver = _resolve
+        AppDomain.CurrentDomain.AssemblyResolve += _resolve
 
     def shutdown_handler(self) -> None:
         if self.hig_interface is not None:
