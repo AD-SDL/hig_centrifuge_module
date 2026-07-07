@@ -1,12 +1,12 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.5.2.0
+# Visual Studio Version 18
+VisualStudioVersion = 18.8.11925.187 insiders
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{827E0CD3-B72D-47B6-A68D-7590B98EB39B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "hig_centrifuge_interface", "hig_centrifuge_interface", "{D78F7BB0-88BD-CED0-9EC8-9B94B2BA5EB6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HiGCentrifugeInterface", "src\hig_centrifuge_interface\HiGCentrifugeInterface.csproj", "{D63CFFB0-E02D-B742-CCBE-D6BBC9527550}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HiGCentrifugeInterface", "src\hig_centrifuge_interface\HiGCentrifugeInterface.csproj", "{D7C39211-CF24-412D-ADEA-3722290BE2F2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -14,17 +14,17 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{D63CFFB0-E02D-B742-CCBE-D6BBC9527550}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D63CFFB0-E02D-B742-CCBE-D6BBC9527550}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D63CFFB0-E02D-B742-CCBE-D6BBC9527550}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D63CFFB0-E02D-B742-CCBE-D6BBC9527550}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D7C39211-CF24-412D-ADEA-3722290BE2F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D7C39211-CF24-412D-ADEA-3722290BE2F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D7C39211-CF24-412D-ADEA-3722290BE2F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D7C39211-CF24-412D-ADEA-3722290BE2F2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{D78F7BB0-88BD-CED0-9EC8-9B94B2BA5EB6} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
-		{D63CFFB0-E02D-B742-CCBE-D6BBC9527550} = {D78F7BB0-88BD-CED0-9EC8-9B94B2BA5EB6}
+		{D7C39211-CF24-412D-ADEA-3722290BE2F2} = {D78F7BB0-88BD-CED0-9EC8-9B94B2BA5EB6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {283990CE-6C9F-451F-9E4E-DBD63B70C094}
